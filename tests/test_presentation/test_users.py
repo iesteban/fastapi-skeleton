@@ -41,3 +41,4 @@ class TestGetUser:
     def test_returns_404_for_missing_user(self, client):
         resp = client.get("/users/99999")
         assert resp.status_code == 404
+

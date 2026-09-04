@@ -14,7 +14,7 @@ Extend `CreateUserRequest` (or create a standalone model in `app/presentation/us
 1. Add a `display_name` field that is optional and defaults to `None`.
 2. Use `@field_validator` to ensure `username` contains only alphanumeric characters and underscores (reject anything else with a clear message).
 3. Use `@model_validator(mode="after")` to auto-populate `display_name` from `username` if it was not supplied.
-4. Add a `@computed_field` (Pydantic v2) to `UserResponse` that exposes a `profile_url: str` constructed as `/users/{id}`.
+4. Add a `@computed_field` (Pydantic v2) to `UserResponse` that exposes a `profile_url: str` constructed as `/users/{id}`. 
 
 **Key concepts:** `@field_validator`, `@model_validator`, `@computed_field`, `Field(default=...)`.
 

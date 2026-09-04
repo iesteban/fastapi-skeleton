@@ -1,6 +1,21 @@
 {
     "version": "0.2.0",
     "configurations": [
+        
+               {
+            "name": "Run Mocked Create-User Test",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "-k",
+                "test_wrong_username_validation",
+                "-v"
+            ],
+            "cwd": "${workspaceFolder}",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "justMyCode": true
+        },
         {
             "name": "Run Tests",
             "type": "debugpy",
@@ -11,5 +26,8 @@
             "python": "${workspaceFolder}/.venv/bin/python",
             "justMyCode": true
         }
+,    
+     
+
     ]
 }

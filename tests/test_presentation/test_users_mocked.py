@@ -14,11 +14,21 @@ SERVICE = "app.presentation.users.UserService"
 
 
 class TestCreateUserWithMock:
+    def setup_method(self):
+        self.fake_user = MagicMock(
+            id=1,
+            username="alice",
+            email="alice@example.com",
+        )
+
+
     def test_returns_201_with_mocked_service(self, client):
         """Patch the service so no DB call is made."""
-        fake_user = MagicMock(id=1, username="alice", email="alice@example.com")
+        
 
-        with patch(f"{SERVICE}.create_user", return_value=fake_user) as mock_create:
+        with patch(
+            f"{SERVICE}.create_user", return_value=self.fake_user
+        ) as mock_create:
             resp = client.post("/users/", json={"username": "alice", "email": "alice@example.com"})
 
         assert resp.status_code == 201
@@ -46,6 +56,17 @@ class TestCreateUserWithMock:
 
         assert resp.status_code == 422
         mock_create.assert_not_called()
+
+    def test_wrong_username_validation(self, client): 
+        with patch(f"{SERVICE}.create_user") as mock_create:
+            resp = client.post("/users/", json={"username": "x a", "email": "good@test.com"})
+        assert resp.status_code == 422
+        error = resp.json()["detail"][0]
+        assert error["loc"] == ["body", "username"]
+        assert "Username must be alphanumeric with underscores only." in error["msg"]
+        mock_create.assert_not_called()
+
+        
 
 
 class TestGetUserWithMock:

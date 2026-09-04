@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from sqlalchemy.orm import Session
+import re
 
 from ..business import UserService
 from ..business.users import UserAlreadyExistsError, UserNotFoundError
@@ -13,6 +14,16 @@ users_router = APIRouter()
 class CreateUserRequest(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
     email: EmailStr
+    display_name: str | None = None
+
+    @field_validator("username", mode="after")
+    @classmethod
+    def validate_username(cls, value: str) -> str:
+        value = value.strip().lower()
+        if not re.match(r"^[a-zA-Z0-9_]+$", value):
+            raise ValueError("Username must be alphanumeric with underscores only.")
+        return value
+
 
 
 class UserResponse(BaseModel):
